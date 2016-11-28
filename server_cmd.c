@@ -16,9 +16,9 @@ void *connection_handler(void *socket_desc)
 
     strcat(buffer, "Galaxy IRC\n");
     write(sock, buffer, strlen(buffer));
-    buffer[0] = '\0';
 
     while ((read_size = recv(sock, client_buffer, sizeof(client_buffer), 0)) > 0) {
+        buffer[0] = '\0';
         strcat(buffer, "Client: ");
         strcat(buffer, client_buffer);
         send(sock, buffer, sizeof(buffer), 0);
