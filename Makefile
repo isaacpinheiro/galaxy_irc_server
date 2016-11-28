@@ -1,6 +1,6 @@
-.PHONY: compile clean run
+.PHONY: build clean run
 
-compile:
+build:
 	gcc -c *.c
 	gcc *.o -lpthread -o galaxy-irc-server
 
