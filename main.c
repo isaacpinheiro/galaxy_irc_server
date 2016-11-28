@@ -8,14 +8,12 @@
 
 #include "server_cmd.h"
 
-#define MAX_PENDING 5
-#define BUFFER_SIZE 1024
-
 int main(int argc, char **argv)
 {
 
     int server_sock;
     int client_sock;
+    int *new_sock;
     struct sockaddr_in server_addr;
     struct sockaddr_in client_addr;
     unsigned int client_len;
@@ -44,26 +42,30 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
+    puts("Galaxy IRC Server\n");
+    puts("Waiting for incoming connections...");
     client_len = sizeof(client_addr);
 
-    if ((client_sock = accept(server_sock, (struct sockaddr *) &client_addr, &client_len)) < 0) {
+    while ((client_sock = accept(server_sock, (struct sockaddr *) &client_addr, &client_len))) {
+
+        puts("Connection accepted.");
+        pthread_t client_thread;
+        new_sock = malloc(1);
+        *new_sock = client_sock;
+
+        if (pthread_create(&client_thread, NULL, connection_handler, (void*) new_sock) < 0) {
+            perror("Could not create thread.");
+            exit(-1);
+        }
+
+        puts("Handler assigned.");
+
+    }
+
+    if (client_sock < 0) {
         perror("accept() failed!");
         exit(-1);
     }
-
-    while (1) {
-
-        recv(client_sock, buffer, sizeof(buffer), 0);
-        printf("%s\n\n", buffer);
-
-        //buffer[0] = '\0';
-        //strcat(buffer, "response");
-        //send(client_sock, buffer, sizeof(buffer), 0);
-
-    }
-
-    close(client_sock);
-    close(server_sock);
 
     return 0;
 
