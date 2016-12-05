@@ -61,13 +61,13 @@ char **remove_user(User *list, char *name)
     j = 0;
 
     for (i=0; i<list->len; i++) {
-        if (strcmp(list->name[i], name) != 0) {
+        if (strcmp(list->name[i], name) != 0 && !conf) {
+            conf = 1;
+        } else {
             new[j] = (char*) malloc(sizeof(char) * 512);
             new[j][0] = '\0';
             strcat(new[j], list->name[i]);
             j++;
-        } else {
-            conf = 1;
         }
     }
 
