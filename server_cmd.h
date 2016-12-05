@@ -11,13 +11,13 @@ typedef struct Message {
 } Message;
 
 typedef struct User {
-    char name[512];
-    struct User *next;
+    int len;
+    char **name;
 } User;
 
 void *connection_handler(void *socket_desc);
 void insert_user(User *list, char *name);
-User *remove_user(User *list, char *name);
+char **remove_user(User *list, char *name);
 void show_users(User *list, char *buffer);
 
 #endif

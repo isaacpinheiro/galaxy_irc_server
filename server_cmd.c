@@ -39,28 +39,54 @@ void *connection_handler(void *socket_desc)
 
 void insert_user(User *list, char *name)
 {
-    if (list->next != NULL) {
-        insert_user(list->next, name);
-    } else {
-        User *new = (User*) malloc(sizeof(User));
-        new->next = NULL;
-        list->name[0] = '\0';
-        strcat(list->name, name);
-        list->next = new;
-    }
+
+    if (list->len == 0) list->name = (char**) malloc(sizeof(char*));
+    else list->name = (char**) realloc(list->name, (list->len + 1) * sizeof(char*));
+
+    list->name[list->len] = (char*) malloc(sizeof(char) * 512);
+    list->name[list->len][0] = '\0';
+    strcat(list->name[list->len], name);
+    list->len++;
+
 }
 
-User *remove_user(User *list, char *name)
+char **remove_user(User *list, char *name)
 {
-    return NULL;
+
+    if (list->len == 0) return NULL;
+
+    char **new = (char**) malloc(sizeof(char*) * (list->len-1));
+    char conf = 0;
+    int i, j;
+    j = 0;
+
+    for (i=0; i<list->len; i++) {
+        if (strcmp(list->name[i], name) != 0) {
+            new[j] = (char*) malloc(sizeof(char) * 512);
+            new[j][0] = '\0';
+            strcat(new[j], list->name[i]);
+            j++;
+        } else {
+            conf = 1;
+        }
+    }
+
+    if (conf) list->len--;
+    free(list->name);
+
+    return new;
+
 }
 
 void show_users(User *list, char *buffer)
 {
-    if (list->next != NULL) {
-        strcat(buffer, list->name);
+
+    int i;
+
+    for (i=0; i<list->len; i++) {
+        strcat(buffer, list->name[i]);
         strcat(buffer, "\n");
-        show_users(list->next, buffer);
     }
+
 }
 
