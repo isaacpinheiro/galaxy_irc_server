@@ -6,10 +6,11 @@
 
 #include "server_cmd.h"
 
-void *connection_handler(void *socket_desc)
+void *connection_handler(void *args)
 {
 
-    int sock = *(int*)socket_desc;
+    ThreadArgs *data = (ThreadArgs*) args;
+    int sock = data->sock;
     int read_size;
     char buffer[BUFFER_SIZE];
     char client_buffer[BUFFER_SIZE];
@@ -31,7 +32,7 @@ void *connection_handler(void *socket_desc)
         perror("recv failed!");
     }
 
-    free(socket_desc);
+    close(data->sock);
 
     return 0;
 

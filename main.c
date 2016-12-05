@@ -13,7 +13,6 @@ int main(int argc, char **argv)
 
     int server_sock;
     int client_sock;
-    int *new_sock;
     struct sockaddr_in server_addr;
     struct sockaddr_in client_addr;
     unsigned int client_len;
@@ -46,14 +45,19 @@ int main(int argc, char **argv)
     puts("Waiting for incoming connections...");
     client_len = sizeof(client_addr);
 
+    User *user_list = (User*) malloc(sizeof(User));
+    user_list->len = 0;
+
     while ((client_sock = accept(server_sock, (struct sockaddr *) &client_addr, &client_len))) {
 
         puts("Connection accepted.");
         pthread_t client_thread;
-        new_sock = malloc(1);
-        *new_sock = client_sock;
 
-        if (pthread_create(&client_thread, NULL, connection_handler, (void*) new_sock) < 0) {
+        ThreadArgs args;
+        args.sock = client_sock;
+        args.user_list = user_list;
+
+        if (pthread_create(&client_thread, NULL, connection_handler, (void*) &args) < 0) {
             perror("Could not create thread.");
             exit(-1);
         }

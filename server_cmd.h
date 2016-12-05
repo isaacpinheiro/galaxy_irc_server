@@ -15,7 +15,12 @@ typedef struct User {
     char **name;
 } User;
 
-void *connection_handler(void *socket_desc);
+typedef struct ThreadArgs {
+    int sock;
+    User *user_list;
+} ThreadArgs;
+
+void *connection_handler(void *args);
 void insert_user(User *list, char *name);
 char **remove_user(User *list, char *name);
 void show_users(User *list, char *buffer);
