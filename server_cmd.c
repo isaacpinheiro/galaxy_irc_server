@@ -14,15 +14,30 @@ void *connection_handler(void *args)
     int read_size;
     char buffer[BUFFER_SIZE];
     char client_buffer[BUFFER_SIZE];
+    Message *me = (Message*) malloc(sizeof(Message));
 
-    strcat(buffer, "Galaxy IRC\n");
-    send(sock, buffer, sizeof(buffer), 0);
+    me->user_name[0] = '\0';
+    me->command[0] = '\0';
+    me->content[0] = '\0';
 
     while ((read_size = recv(sock, client_buffer, sizeof(client_buffer), 0)) > 0) {
+
+        memcpy(me, client_buffer, sizeof(buffer));
+
+        if (strcmp(me->command, "new_user") == 0) {
+            insert_user(data->user_list, me->content);
+
+            buffer[0] = '\0';
+            strcat(buffer, "Users: \n");
+            show_users(data->user_list, buffer);
+            send(sock, buffer, sizeof(buffer), 0);
+        }
+
         buffer[0] = '\0';
         strcat(buffer, "Client: ");
-        strcat(buffer, client_buffer);
+        strcat(buffer, me->content);
         send(sock, buffer, sizeof(buffer), 0);
+
     }
 
     if (read_size == 0) {
