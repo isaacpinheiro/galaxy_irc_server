@@ -37,3 +37,30 @@ void *connection_handler(void *socket_desc)
 
 }
 
+void insert_user(User *list, char *name)
+{
+    if (list->next != NULL) {
+        insert_user(list->next, name);
+    } else {
+        User *new = (User*) malloc(sizeof(User));
+        new->next = NULL;
+        list->name[0] = '\0';
+        strcat(list->name, name);
+        list->next = new;
+    }
+}
+
+User *remove_user(User *list, char *name)
+{
+    return NULL;
+}
+
+void show_users(User *list, char *buffer)
+{
+    if (list->next != NULL) {
+        strcat(buffer, list->name);
+        strcat(buffer, "\n");
+        show_users(list->next, buffer);
+    }
+}
+
