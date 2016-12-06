@@ -50,7 +50,7 @@ void *connection_handler(void *args)
             recv(sock, buffer, sizeof(buffer), 0);
             strcat(k_name, buffer);
 
-            kill(data->user_list, k_name);
+            kill_user(data->user_list, k_name);
 
         } else if (strcmp(client_buffer, "/nick") == 0) {
 
@@ -165,7 +165,7 @@ void send_all(UserList *list, char *buffer)
 
 }
 
-void kill(UserList *list, char *name)
+void kill_user(UserList *list, char *name)
 {
 
     int i;
