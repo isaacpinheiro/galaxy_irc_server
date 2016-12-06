@@ -42,7 +42,16 @@ void *connection_handler(void *args)
 
         } else if (strcmp(client_buffer, "/nick") == 0) {
 
-            // TODO
+            char c_name[1024];
+            c_name[0] = '\0';
+
+            buffer[0] == '\0';
+            recv(sock, buffer, sizeof(buffer), 0);
+            strcat(c_name, buffer);
+
+            buffer[0] == '\0';
+            recv(sock, buffer, sizeof(buffer), 0);
+            change_nick(data->user_list, c_name, buffer);
 
         } else {
 
@@ -117,6 +126,21 @@ void show_users(User *list, char *buffer)
     for (i=0; i<list->len; i++) {
         strcat(buffer, list->name[i]);
         strcat(buffer, "\n");
+    }
+
+}
+
+void change_nick(User *list, char *current_name, char *new_name)
+{
+
+    int i;
+
+    for (i=0; i<list->len; i++) {
+        if (strcmp(list->name[i], current_name) == 0) {
+            list->name[i][0] = '\0';
+            strcat(list->name[i], new_name);
+            break;
+        }
     }
 
 }

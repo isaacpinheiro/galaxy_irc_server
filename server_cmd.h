@@ -18,6 +18,7 @@ void *connection_handler(void *args);
 void insert_user(User *list, char *name);
 char **remove_user(User *list, char *name);
 void show_users(User *list, char *buffer);
+void change_nick(User *list, char *current_name, char *new_name);
 
 #endif
 
