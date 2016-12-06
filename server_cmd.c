@@ -50,11 +50,7 @@ void *connection_handler(void *args)
             recv(sock, buffer, sizeof(buffer), 0);
             strcat(k_name, buffer);
 
-            buffer[0] = '\0';
-            strcat(buffer, "Not implemented.");
-            send(sock, buffer, sizeof(buffer), 0);
-
-            // TODO
+            kill(data->user_list, k_name);
 
         } else if (strcmp(client_buffer, "/nick") == 0) {
 
@@ -165,6 +161,20 @@ void send_all(UserList *list, char *buffer)
 
     for (i=0; i<list->len; i++) {
         write(list->user[i].sock, buffer, strlen(buffer));
+    }
+
+}
+
+void kill(UserList *list, char *name)
+{
+
+    int i;
+
+    for (i=0; i<list->len; i++) {
+        if (strcmp(list->user[i].name, name) == 0) {
+            write(list->user[i].sock, "/kill", strlen("/kill"));
+            break;
+        }
     }
 
 }
