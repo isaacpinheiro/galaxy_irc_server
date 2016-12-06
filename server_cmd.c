@@ -38,6 +38,17 @@ void *connection_handler(void *args)
 
         } else if (strcmp(client_buffer, "/kill") == 0) {
 
+            char k_name[1024];
+            k_name[0] = '\0';
+
+            buffer[0] == '\0';
+            recv(sock, buffer, sizeof(buffer), 0);
+            strcat(k_name, buffer);
+
+            buffer[0] = '\0';
+            strcat(buffer, "Not implemented.");
+            send(sock, buffer, sizeof(buffer), 0);
+
             // TODO
 
         } else if (strcmp(client_buffer, "/nick") == 0) {
