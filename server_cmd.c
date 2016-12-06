@@ -32,7 +32,9 @@ void *connection_handler(void *args)
 
         } else if (strcmp(client_buffer, "/quit") == 0) {
 
-            // TODO
+            buffer[0] == '\0';
+            recv(sock, buffer, sizeof(buffer), 0);
+            data->user_list->name = remove_user(data->user_list, buffer);
 
         } else if (strcmp(client_buffer, "/kill") == 0) {
 
@@ -90,7 +92,7 @@ char **remove_user(User *list, char *name)
     j = 0;
 
     for (i=0; i<list->len; i++) {
-        if (strcmp(list->name[i], name) != 0 && !conf) {
+        if (strcmp(list->name[i], name) == 0 && !conf) {
             conf = 1;
         } else {
             new[j] = (char*) malloc(sizeof(char) * 512);
