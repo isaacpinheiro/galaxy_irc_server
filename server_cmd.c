@@ -21,7 +21,12 @@ void *connection_handler(void *args)
 
             buffer[0] == '\0';
             recv(sock, buffer, sizeof(buffer), 0);
-            insert_user(data->user_list, buffer);
+
+            User u;
+            u.sock = sock;
+            u.name[0] = '\0';
+            strcat(u.name, buffer);
+            insert_user(data->user_list, u);
 
         } else if (strcmp(client_buffer, "/list") == 0) {
 
@@ -34,7 +39,7 @@ void *connection_handler(void *args)
 
             buffer[0] == '\0';
             recv(sock, buffer, sizeof(buffer), 0);
-            data->user_list->name = remove_user(data->user_list, buffer);
+            data->user_list->user = remove_user(data->user_list, buffer);
 
         } else if (strcmp(client_buffer, "/kill") == 0) {
 
@@ -89,68 +94,64 @@ void *connection_handler(void *args)
 
 }
 
-void insert_user(User *list, char *name)
+void insert_user(UserList *list, User user)
 {
 
-    if (list->len == 0) list->name = (char**) malloc(sizeof(char*));
-    else list->name = (char**) realloc(list->name, (list->len + 1) * sizeof(char*));
+    if (list->len == 0) list->user = (User*) malloc(sizeof(User));
+    else list->user = (User*) realloc(list->user, (list->len + 1) * sizeof(User));
 
-    list->name[list->len] = (char*) malloc(sizeof(char) * 512);
-    list->name[list->len][0] = '\0';
-    strcat(list->name[list->len], name);
+    list->user[list->len] = user;
     list->len++;
 
 }
 
-char **remove_user(User *list, char *name)
+User *remove_user(UserList *list, char *name)
 {
 
     if (list->len == 0) return NULL;
 
-    char **new = (char**) malloc(sizeof(char*) * (list->len-1));
+    User *new = (User*) malloc(sizeof(User) * (list->len-1));
     char conf = 0;
     int i, j;
     j = 0;
 
     for (i=0; i<list->len; i++) {
-        if (strcmp(list->name[i], name) == 0 && !conf) {
+        if (strcmp(list->user[i].name, name) == 0 && !conf) {
             conf = 1;
         } else {
-            new[j] = (char*) malloc(sizeof(char) * 512);
-            new[j][0] = '\0';
-            strcat(new[j], list->name[i]);
+            new[j] = list->user[i];
             j++;
         }
     }
 
     if (conf) list->len--;
-    free(list->name);
+    free(list->user);
 
     return new;
 
 }
 
-void show_users(User *list, char *buffer)
+void show_users(UserList *list, char *buffer)
 {
 
     int i;
 
     for (i=0; i<list->len; i++) {
-        strcat(buffer, list->name[i]);
+        strcat(buffer, list->user[i].name);
         if (i < list->len - 1) strcat(buffer, "\n");
     }
 
 }
 
-void change_nick(User *list, char *current_name, char *new_name)
+void change_nick(UserList *list, char *current_name, char *new_name)
 {
 
     int i;
 
     for (i=0; i<list->len; i++) {
-        if (strcmp(list->name[i], current_name) == 0) {
-            list->name[i][0] = '\0';
-            strcat(list->name[i], new_name);
+        if (strcmp(list->user[i].name, current_name) == 0) {
+            list->user[i].name[0] = '\0';
+            strcat(list->user[i].name, new_name);
             break;
         }
     }

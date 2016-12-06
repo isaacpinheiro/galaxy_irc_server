@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     puts("Waiting for incoming connections...");
     client_len = sizeof(client_addr);
 
-    User *user_list = (User*) malloc(sizeof(User));
+    UserList *user_list = (UserList*) malloc(sizeof(UserList));
     user_list->len = 0;
 
     while ((client_sock = accept(server_sock, (struct sockaddr *) &client_addr, &client_len))) {
