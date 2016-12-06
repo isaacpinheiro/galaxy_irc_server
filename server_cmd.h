@@ -24,6 +24,7 @@ void insert_user(UserList *list, User user);
 User *remove_user(UserList *list, char *name);
 void show_users(UserList *list, char *buffer);
 void change_nick(UserList *list, char *current_name, char *new_name);
+void send_all(UserList *list, char *buffer);
 
 #endif
 

@@ -73,7 +73,7 @@ void *connection_handler(void *args)
 
             buffer[0] = '\0';
             strcat(buffer, client_buffer);
-            send(sock, buffer, sizeof(buffer), 0);
+            send_all(data->user_list, buffer);
 
         }
 
@@ -154,6 +154,17 @@ void change_nick(UserList *list, char *current_name, char *new_name)
             strcat(list->user[i].name, new_name);
             break;
         }
+    }
+
+}
+
+void send_all(UserList *list, char *buffer)
+{
+
+    int i;
+
+    for (i=0; i<list->len; i++) {
+        write(list->user[i].sock, buffer, strlen(buffer));
     }
 
 }
