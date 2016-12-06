@@ -4,12 +4,6 @@
 #define MAX_PENDING 5
 #define BUFFER_SIZE 1024
 
-typedef struct Message {
-    char user_name[256];
-    char command[256];
-    char content[512];
-} Message;
-
 typedef struct User {
     int len;
     char **name;
