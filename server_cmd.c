@@ -56,11 +56,12 @@ void *connection_handler(void *args)
         } else {
 
             buffer[0] = '\0';
-            strcat(buffer, "Client: ");
             strcat(buffer, client_buffer);
             send(sock, buffer, sizeof(buffer), 0);
 
         }
+
+        client_buffer[0] = '\0';
 
     }
 
