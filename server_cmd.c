@@ -126,7 +126,7 @@ void show_users(User *list, char *buffer)
 
     for (i=0; i<list->len; i++) {
         strcat(buffer, list->name[i]);
-        strcat(buffer, "\n");
+        if (i < list->len - 1) strcat(buffer, "\n");
     }
 
 }
