@@ -51,6 +51,7 @@ void *connection_handler(void *args)
             strcat(k_name, buffer);
 
             kill_user(data->user_list, k_name);
+            data->user_list->user = remove_user(data->user_list, buffer);
 
         } else if (strcmp(client_buffer, "/nick") == 0) {
 
@@ -160,7 +161,7 @@ void send_all(UserList *list, char *buffer)
     int i;
 
     for (i=0; i<list->len; i++) {
-        write(list->user[i].sock, buffer, strlen(buffer));
+        send(list->user[i].sock, buffer, strlen(buffer), 0);
     }
 
 }
@@ -172,7 +173,8 @@ void kill_user(UserList *list, char *name)
 
     for (i=0; i<list->len; i++) {
         if (strcmp(list->user[i].name, name) == 0) {
-            write(list->user[i].sock, "/kill", strlen("/kill"));
+            send(list->user[i].sock, "Disconnected - killed", strlen("Disconnected - killed"), 0);
+            close(list->user[i].sock);
             break;
         }
     }
