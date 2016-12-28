@@ -19,8 +19,7 @@ int main(int argc, char **argv)
     unsigned short server_port = 9000;
     char server_ip[16];
     char buffer[BUFFER_SIZE];
-    server_ip[0] = '\0';
-    strcat(server_ip, argv[1]);
+    strcpy(server_ip, argv[1]);
 
     if ((server_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
         perror("socket() failed!");

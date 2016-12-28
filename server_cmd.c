@@ -19,36 +19,30 @@ void *connection_handler(void *args)
 
         if (strcmp(client_buffer, "/new_user") == 0) {
 
-            buffer[0] == '\0';
             recv(sock, buffer, sizeof(buffer), 0);
 
             User u;
             u.sock = sock;
-            u.name[0] = '\0';
-            strcat(u.name, buffer);
+            strcpy(u.name, buffer);
             insert_user(data->user_list, u);
 
         } else if (strcmp(client_buffer, "/list") == 0) {
 
-            buffer[0] = '\0';
-            strcat(buffer, "Users: \n");
+            strcpy(buffer, "Users: \n");
             show_users(data->user_list, buffer);
             send(sock, buffer, sizeof(buffer), 0);
 
         } else if (strcmp(client_buffer, "/quit") == 0) {
 
-            buffer[0] == '\0';
             recv(sock, buffer, sizeof(buffer), 0);
             data->user_list->user = remove_user(data->user_list, buffer);
 
         } else if (strcmp(client_buffer, "/kill") == 0) {
 
             char k_name[1024];
-            k_name[0] = '\0';
 
-            buffer[0] == '\0';
             recv(sock, buffer, sizeof(buffer), 0);
-            strcat(k_name, buffer);
+            strcpy(k_name, buffer);
 
             kill_user(data->user_list, k_name);
             data->user_list->user = remove_user(data->user_list, buffer);
@@ -56,25 +50,19 @@ void *connection_handler(void *args)
         } else if (strcmp(client_buffer, "/nick") == 0) {
 
             char c_name[1024];
-            c_name[0] = '\0';
 
-            buffer[0] == '\0';
             recv(sock, buffer, sizeof(buffer), 0);
-            strcat(c_name, buffer);
+            strcpy(c_name, buffer);
 
-            buffer[0] == '\0';
             recv(sock, buffer, sizeof(buffer), 0);
             change_nick(data->user_list, c_name, buffer);
 
         } else {
 
-            buffer[0] = '\0';
-            strcat(buffer, client_buffer);
+            strcpy(buffer, client_buffer);
             send_all(data->user_list, buffer);
 
         }
-
-        client_buffer[0] = '\0';
 
     }
 
@@ -147,8 +135,7 @@ void change_nick(UserList *list, char *current_name, char *new_name)
 
     for (i=0; i<list->len; i++) {
         if (strcmp(list->user[i].name, current_name) == 0) {
-            list->user[i].name[0] = '\0';
-            strcat(list->user[i].name, new_name);
+            strcpy(list->user[i].name, new_name);
             break;
         }
     }
@@ -173,7 +160,7 @@ void kill_user(UserList *list, char *name)
 
     for (i=0; i<list->len; i++) {
         if (strcmp(list->user[i].name, name) == 0) {
-            send(list->user[i].sock, "Disconnected - killed", strlen("Disconnected - killed"), 0);
+            send(list->user[i].sock, "Disconnected - killed.", strlen("Disconnected - killed."), 0);
             close(list->user[i].sock);
             break;
         }
