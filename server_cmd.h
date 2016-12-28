@@ -19,6 +19,12 @@ typedef struct ThreadArgs {
     UserList *user_list;
 } ThreadArgs;
 
+typedef struct Message {
+    char user_name[256];
+    char command[256];
+    char content[512];
+} Message;
+
 void *connection_handler(void *args);
 void insert_user(UserList *list, User user);
 User *remove_user(UserList *list, char *name);
