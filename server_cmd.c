@@ -17,49 +17,40 @@ void *connection_handler(void *args)
 
     while ((read_size = recv(sock, client_buffer, sizeof(client_buffer), 0)) > 0) {
 
-        if (strcmp(client_buffer, "/new_user") == 0) {
+        Message m;
+        memcpy(&m, client_buffer, sizeof(Message));
 
-            recv(sock, buffer, sizeof(buffer), 0);
+        if (strcmp(m.command, "/new_user") == 0) {
 
             User u;
             u.sock = sock;
-            strcpy(u.name, buffer);
+            strcpy(u.name, m.content);
             insert_user(data->user_list, u);
 
-        } else if (strcmp(client_buffer, "/list") == 0) {
+        } else if (strcmp(m.command, "/list") == 0) {
 
             strcpy(buffer, "Users: \n");
             show_users(data->user_list, buffer);
             send(sock, buffer, sizeof(buffer), 0);
 
-        } else if (strcmp(client_buffer, "/quit") == 0) {
+        } else if (strcmp(m.command, "/quit") == 0) {
 
-            recv(sock, buffer, sizeof(buffer), 0);
-            data->user_list->user = remove_user(data->user_list, buffer);
+            data->user_list->user = remove_user(data->user_list, m.user_name);
 
-        } else if (strcmp(client_buffer, "/kill") == 0) {
+        } else if (strcmp(m.command, "/kill") == 0) {
 
-            char k_name[1024];
+            kill_user(data->user_list, m.content);
+            data->user_list->user = remove_user(data->user_list, m.content);
 
-            recv(sock, buffer, sizeof(buffer), 0);
-            strcpy(k_name, buffer);
+        } else if (strcmp(m.command, "/nick") == 0) {
 
-            kill_user(data->user_list, k_name);
-            data->user_list->user = remove_user(data->user_list, buffer);
-
-        } else if (strcmp(client_buffer, "/nick") == 0) {
-
-            char c_name[1024];
-
-            recv(sock, buffer, sizeof(buffer), 0);
-            strcpy(c_name, buffer);
-
-            recv(sock, buffer, sizeof(buffer), 0);
-            change_nick(data->user_list, c_name, buffer);
+            change_nick(data->user_list, m.user_name, m.content);
 
         } else {
 
-            strcpy(buffer, client_buffer);
+            strcpy(buffer, m.user_name);
+            strcat(buffer, ": ");
+            strcat(buffer, m.content);
             send_all(data->user_list, buffer);
 
         }
